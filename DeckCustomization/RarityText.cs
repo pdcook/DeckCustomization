@@ -102,15 +102,21 @@ namespace DeckCustomization
                         }
                 }
             }
-            if (DeckCustomization.DisplayPerc)
+            // add a space if both are enabled
+            if (DeckCustomization.DisplayRarities && DeckCustomization.DisplayPerc)
+            {
+                text += " ";
+            }    
+
+            // do not add percentage if the card is not in activeCards
+            if (DeckCustomization.DisplayPerc && DeckCustomization.activeCards.Select(c => c.cardName).Contains(card.cardName))
             {
                 float p = RarityUtils.GetRarityAsPerc(card);
-                text += " ("+String.Format("{0:0.##}", p*100f)+"%)";
+                text += "("+String.Format("{0:0.##}", p*100f)+"%)";
             }
             rarityText.text = text;
             rarityText.color = color;
             rarityText.enableWordWrapping = false;
-            //rarityObj.transform.Rotate(0f, 0f, 135f);
             rarityObj.transform.localScale = new Vector3(1f, 1f, 1f);
             rarityObj.transform.localPosition = new Vector3(0f, -600f, 0f);
             rarityText.alignment = TextAlignmentOptions.Bottom;

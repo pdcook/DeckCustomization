@@ -24,7 +24,7 @@ namespace DeckCustomization
 {
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
-    [BepInPlugin(ModId, ModName, "0.0.0")]
+    [BepInPlugin(ModId, ModName, "0.0.1")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
     {
@@ -96,6 +96,9 @@ namespace DeckCustomization
         }
         private void Start()
         {
+            // fix default card themes
+            FixThemes.FixCardThemes(allCards.ToArray());
+
             // load settings to prevent them from being orphaned
             BetterMethod = BetterMethodConfig.Value;
             DisplayRarities = DisplayRaritiesConfig.Value;

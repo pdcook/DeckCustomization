@@ -17,6 +17,8 @@ Every card in ROUNDS has a theme, easily identified by the border color of the c
 
 The relative rarities of card themes can be adjusted. By default they are all equally likely to appear.
 
+_Note_: Some card themes in the vanilla game do not seem to match the actual theme of the card, and so this mod changes them to be more consistent. For example, in the vanilla game, Echo is "Destructive Red" whereas multiple members of the community have agreed it "should" be "Defensive Blue."
+
 ## Card Pack Rarity Adjustment
 ------------------------------
 

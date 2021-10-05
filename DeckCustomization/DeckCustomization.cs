@@ -69,6 +69,22 @@ namespace DeckCustomization
                 return ((ObservableCollection<CardInfo>)typeof(CardManager).GetField("activeCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).ToList();
             }
         }
+        internal static List<CardInfo> inactiveCards
+        {
+            get
+            {
+                return (List<CardInfo>)typeof(CardManager).GetField("inactiveCards", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null);
+            }
+            set { }
+        }
+        internal static List<CardInfo> allCards
+        {
+            get
+            {
+                return activeCards.Concat(inactiveCards).ToList();
+            }
+            set { }
+        }
 
         private void Awake()
         {
@@ -88,7 +104,7 @@ namespace DeckCustomization
             {
                 // load/create settings for each mod, rarity, and cardtheme
                 string mod = defaultCardsName;
-                foreach (CardInfo card in activeCards)
+                foreach (CardInfo card in allCards)
                 {
                     if (card.gameObject.GetComponent<CustomCard>() != null)
                     {
@@ -105,7 +121,7 @@ namespace DeckCustomization
                 }
 
 
-                foreach (CardInfo card in activeCards)
+                foreach (CardInfo card in allCards)
                 {
                     if (card.gameObject.GetComponent<CustomCard>() != null)
                     {

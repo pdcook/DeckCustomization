@@ -4,6 +4,9 @@ using HarmonyLib;
 using UnityEngine;
 using ModdingUtils.Utils;
 using System.Linq;
+using CardChoiceSpawnUniqueCardPatch;
+using System.Reflection;
+using System.Collections.Generic;
 
 namespace DeckCustomization
 {
@@ -67,6 +70,18 @@ namespace DeckCustomization
 			if (player == null) { return Modified(cardChoice); }
 
 			CardInfo[] validCards = cardChoice.cards.Where(c => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(player, c)).ToArray();
+			
+			if ((bool)CardChoiceVisuals.instance.GetFieldValue("isShowinig"))
+            {
+				List<string> spawnedCards = ((List<GameObject>)CardChoice.instance.GetFieldValue("spawnedCards")).Select(obj => obj.GetComponent<CardInfo>().cardName).ToList();
+				validCards = validCards.Where(c => !spawnedCards.Contains(c.cardName)).ToArray();
+            }
+
+			// if there are no valid cards immediately return the Null Card from SpawnUniqueCardPatch
+			if (!validCards.Any())
+            {
+				return ((CardInfo)typeof(CardChoiceSpawnUniqueCardPatch.CardChoiceSpawnUniqueCardPatch).GetField("NullCard", BindingFlags.NonPublic | BindingFlags.Static).GetValue(null)).gameObject;
+			}
 
 			GameObject result = null;
 			float num = 0f;

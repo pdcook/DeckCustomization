@@ -74,7 +74,7 @@ namespace DeckCustomization
 			if ((bool)CardChoiceVisuals.instance.GetFieldValue("isShowinig"))
             {
 				List<string> spawnedCards = ((List<GameObject>)CardChoice.instance.GetFieldValue("spawnedCards")).Select(obj => obj.GetComponent<CardInfo>().cardName).ToList();
-				validCards = validCards.Where(c => !spawnedCards.Contains(c.cardName)).ToArray();
+				validCards = validCards.Where(c => c.categories.Contains(CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.CanDrawMultipleCategory) || !spawnedCards.Contains(c.cardName)).ToArray();
             }
 
 			// if there are no valid cards immediately return the Null Card from SpawnUniqueCardPatch

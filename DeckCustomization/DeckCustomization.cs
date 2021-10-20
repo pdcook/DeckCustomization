@@ -25,7 +25,7 @@ namespace DeckCustomization
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.0.2")]
+    [BepInPlugin(ModId, ModName, "0.0.3")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
     {
@@ -89,7 +89,7 @@ namespace DeckCustomization
 
         private void Awake()
         {
-            BetterMethodConfig = Config.Bind(CompatibilityModName, "BetterMethod", false, "Use a more efficient method of drawing a random card from the deck - should produce identical results to the vanilla game.");
+            BetterMethodConfig = Config.Bind(CompatibilityModName, "BetterMethod", true, "Use a more efficient method of drawing a random card from the deck - should produce identical results to the vanilla game.");
             DisplayRaritiesConfig = Config.Bind(CompatibilityModName, "DisplayRarities", false, "Add text to cards to indicate their rarity (colorblind accessibility option)");
             DisplayPercConfig = Config.Bind(CompatibilityModName, "DisplayPercentages", false, "Add text to cards to indicate their rarity as a percentage.");
             // apply patches

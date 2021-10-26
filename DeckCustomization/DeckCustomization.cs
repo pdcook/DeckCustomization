@@ -25,7 +25,7 @@ namespace DeckCustomization
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.0.3")]
+    [BepInPlugin(ModId, ModName, "0.0.4")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
     {
@@ -39,8 +39,10 @@ namespace DeckCustomization
         internal static bool DisplayRarities;
         private static ConfigEntry<bool> DisplayPercConfig;
         internal static bool DisplayPerc;
-        private static ConfigEntry<bool> BetterMethodConfig;
-        internal static bool BetterMethod;
+        //private static ConfigEntry<bool> BetterMethodConfig;
+        //internal static bool BetterMethod;
+
+        internal const bool BetterMethod = true; // always use bettermethod
 
         // for menus
         private static TextMeshProUGUI commontxt = new TextMeshProUGUI(), uncommontxt = new TextMeshProUGUI(), raretxt = new TextMeshProUGUI();
@@ -89,7 +91,7 @@ namespace DeckCustomization
 
         private void Awake()
         {
-            BetterMethodConfig = Config.Bind(CompatibilityModName, "BetterMethod", true, "Use a more efficient method of drawing a random card from the deck - should produce identical results to the vanilla game.");
+            //BetterMethodConfig = Config.Bind(CompatibilityModName, "BetterMethod", true, "Use a more efficient method of drawing a random card from the deck - should produce identical results to the vanilla game.");
             DisplayRaritiesConfig = Config.Bind(CompatibilityModName, "DisplayRarities", false, "Add text to cards to indicate their rarity (colorblind accessibility option)");
             DisplayPercConfig = Config.Bind(CompatibilityModName, "DisplayPercentages", false, "Add text to cards to indicate their rarity as a percentage.");
             // apply patches
@@ -101,7 +103,7 @@ namespace DeckCustomization
             FixThemes.FixCardThemes(allCards.ToArray());
 
             // load settings to prevent them from being orphaned
-            BetterMethod = BetterMethodConfig.Value;
+            //BetterMethod = BetterMethodConfig.Value;
             DisplayRarities = DisplayRaritiesConfig.Value;
             DisplayPerc = DisplayPercConfig.Value;
             Unbound.Instance.ExecuteAfterSeconds(0.5f, () =>
@@ -200,7 +202,7 @@ namespace DeckCustomization
         [UnboundRPC]
         private static void SyncSettings(bool better, string[] mods, float[] modrarities, byte[] rarities, float[] rarityrarities, byte[] themes, float[] themerarities)
         {
-            BetterMethod = better;
+            //BetterMethod = better;
 
             for (int i = 0; i<mods.Length; i++)
             {
@@ -264,11 +266,11 @@ namespace DeckCustomization
         private void NewGUI(GameObject menu)
         {
             MenuHandler.CreateText(ModName + " Options", menu, out TextMeshProUGUI _, 60);
-            void algChanged(bool val)
-            {
-                BetterMethod = val;
-                BetterMethodConfig.Value = val;
-            }
+            //void algChanged(bool val)
+            //{
+                //BetterMethod = val;
+                //BetterMethodConfig.Value = val;
+            //}
             void displaytext(bool val)
             {
                 DisplayRarities = val;
@@ -279,7 +281,7 @@ namespace DeckCustomization
                 DisplayPerc = val;
                 DisplayPercConfig.Value = val;
             }
-            MenuHandler.CreateToggle(BetterMethodConfig.Value, "Use More Efficient Card Draw Algorithm", menu, algChanged, 30);
+            //MenuHandler.CreateToggle(BetterMethodConfig.Value, "Use More Efficient Card Draw Algorithm", menu, algChanged, 30);
             MenuHandler.CreateToggle(DisplayRaritiesConfig.Value, "Display Card Rarities as Text", menu, displaytext, 30);
             MenuHandler.CreateToggle(DisplayPercConfig.Value, "Display Card Rarities as Percentages", menu, displayperc, 30);
 
@@ -325,8 +327,8 @@ namespace DeckCustomization
             MenuHandler.CreateText(" ", menu, out TextMeshProUGUI _, 30);
             void ResetALL()
             {
-                BetterMethod = false;
-                BetterMethodConfig.Value = false; 
+                //BetterMethod = false;
+                //BetterMethodConfig.Value = false; 
                 DisplayRarities = false;
                 DisplayRaritiesConfig.Value = false; 
                 DisplayPerc = false;

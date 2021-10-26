@@ -37,6 +37,4 @@ If you want to know the _exact_ percent rarity of each card, you can enable the 
 ## More Efficient Draws
 -----------------------
 
-- v0.0.2: Significantly improved performance of this mode
-
-You can optionally enable a more efficient algorithm for drawing cards from the deck. This should produce identical draws to the vanilla algorithm, but the difference in speed is negligible.
+This mod automatically uses a _significantly_ more efficient algorithm for drawing cards from the deck. This is practically necessary since it can be possible for a significant fraction of the deck to be invalid (rarities set to 0, incompatible with players' current cards, etc.). This algorithm has been tested and verified to produce identical draws to the vanilla game's algorithm.

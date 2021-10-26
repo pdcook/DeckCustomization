@@ -69,7 +69,7 @@ namespace DeckCustomization
 			}
 			if (player == null) { return Modified(cardChoice); }
 
-			CardInfo[] validCards = cardChoice.cards.Where(c => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(player, c)).ToArray();
+			CardInfo[] validCards = cardChoice.cards.Where(c => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(player, c) && RarityUtils.GetRelativeRarity(c) > 0f).ToArray();
 			
 			if ((bool)CardChoiceVisuals.instance.GetFieldValue("isShowinig"))
             {

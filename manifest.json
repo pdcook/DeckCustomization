@@ -1,6 +1,6 @@
 {
     "name": "Deck_Customization",
-    "version_number": "0.0.4",
+    "version_number": "0.0.5",
     "website_url": "https://github.com/pdcook/DeckCustomization",
     "description": "Fully adjustable card rarities as well as accessibility options and stats for nerds",
     "dependencies": [

@@ -15,9 +15,9 @@ namespace DeckCustomization
     [HarmonyPatch(typeof(CardChoice), "GetRanomCard")]
     class CardChoicePatchGetRanomCard
     {
-        private static bool Prefix(ref GameObject __result)
+        private static bool Prefix(CardChoice __instance, ref GameObject __result)
         {
-			if (DeckCustomization.BetterMethod)
+			if (DeckCustomization.BetterMethod && (bool)CardChoiceVisuals.instance.GetFieldValue("isShowinig") && GetRandomCard.PickingPlayer(__instance) != null)
             {
 				__result = GetRandomCard.Efficient(CardChoice.instance);
             }
@@ -58,15 +58,7 @@ namespace DeckCustomization
         internal static GameObject Efficient(CardChoice cardChoice)
         {
 			// this is a more efficient version of the above method that gauruntees that cards drawn will be valid on the first try
-			Player player = null;
-			if ((PickerType)cardChoice.GetFieldValue("pickerType") == PickerType.Team)
-			{
-				player = PlayerManager.instance.GetPlayersInTeam(cardChoice.pickrID)[0];
-			}
-			else
-			{
-				player = PlayerManager.instance.players[cardChoice.pickrID];
-			}
+			Player player = PickingPlayer(cardChoice);
 			if (player == null) { return Modified(cardChoice); }
 
 			CardInfo[] validCards = cardChoice.cards.Where(c => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(player, c) && RarityUtils.GetRelativeRarity(c) > 0f).ToArray();
@@ -102,6 +94,20 @@ namespace DeckCustomization
 			}
 			return result;
 
+		}
+
+		internal static Player PickingPlayer(CardChoice cardChoice)
+        {
+			Player player = null;
+			if ((PickerType)cardChoice.GetFieldValue("pickerType") == PickerType.Team)
+			{
+				player = PlayerManager.instance.GetPlayersInTeam(cardChoice.pickrID).FirstOrDefault();
+			}
+			else
+			{
+				player = (cardChoice.pickrID < PlayerManager.instance.players.Count() && cardChoice.pickrID >= 0) ? PlayerManager.instance.players[cardChoice.pickrID] : null;
+			}
+			return player;
 		}
     }
 

@@ -25,7 +25,7 @@ namespace DeckCustomization
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.0.5")]
+    [BepInPlugin(ModId, ModName, "0.0.6")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
     {

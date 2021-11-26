@@ -62,12 +62,19 @@ namespace DeckCustomization
 			if (player == null) { return Modified(cardChoice); }
 
 			CardInfo[] validCards = cardChoice.cards.Where(c => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(player, c) && RarityUtils.GetRelativeRarity(c) > 0f).ToArray();
-			
-			if ((bool)CardChoiceVisuals.instance.GetFieldValue("isShowinig"))
+
+			try
+			{
+				if ((bool)CardChoiceVisuals.instance.GetFieldValue("isShowinig"))
+				{
+					List<string> spawnedCards = ((List<GameObject>)CardChoice.instance.GetFieldValue("spawnedCards")).Select(obj => obj.GetComponent<CardInfo>().cardName).ToList();
+					validCards = validCards.Where(c => c.categories.Contains(CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.CanDrawMultipleCategory) || !spawnedCards.Contains(c.cardName)).ToArray();
+				}
+			}
+			catch (NullReferenceException)
             {
-				List<string> spawnedCards = ((List<GameObject>)CardChoice.instance.GetFieldValue("spawnedCards")).Select(obj => obj.GetComponent<CardInfo>().cardName).ToList();
-				validCards = validCards.Where(c => c.categories.Contains(CardChoiceSpawnUniqueCardPatch.CustomCategories.CustomCardCategories.CanDrawMultipleCategory) || !spawnedCards.Contains(c.cardName)).ToArray();
-            }
+				validCards = cardChoice.cards.Where(c => ModdingUtils.Utils.Cards.instance.PlayerIsAllowedCard(player, c) && RarityUtils.GetRelativeRarity(c) > 0f).ToArray();
+			}
 
 			// if there are no valid cards immediately return the Null Card from SpawnUniqueCardPatch
 			if (!validCards.Any())
@@ -99,14 +106,22 @@ namespace DeckCustomization
 		internal static Player PickingPlayer(CardChoice cardChoice)
         {
 			Player player = null;
-			if ((PickerType)cardChoice.GetFieldValue("pickerType") == PickerType.Team)
-			{
-				player = PlayerManager.instance.GetPlayersInTeam(cardChoice.pickrID).FirstOrDefault();
+			try
+            {
+				if ((PickerType)cardChoice.GetFieldValue("pickerType") == PickerType.Team)
+				{
+					player = PlayerManager.instance.GetPlayersInTeam(cardChoice.pickrID).FirstOrDefault();
+				}
+				else
+				{
+					player = (cardChoice.pickrID < PlayerManager.instance.players.Count() && cardChoice.pickrID >= 0) ? PlayerManager.instance.players[cardChoice.pickrID] : null;
+				}
 			}
-			else
-			{
-				player = (cardChoice.pickrID < PlayerManager.instance.players.Count() && cardChoice.pickrID >= 0) ? PlayerManager.instance.players[cardChoice.pickrID] : null;
-			}
+			catch
+            {
+				player = null;
+            }
+
 			return player;
 		}
     }

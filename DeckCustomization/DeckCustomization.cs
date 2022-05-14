@@ -45,8 +45,8 @@ namespace DeckCustomization
         internal const bool BetterMethod = true; // always use bettermethod
 
         // for menus
-        private static TextMeshProUGUI commontxt = new TextMeshProUGUI(), uncommontxt = new TextMeshProUGUI(), raretxt = new TextMeshProUGUI();
-        private static Slider commonSlider, uncommonSlider, rareSlider;
+        private static Dictionary<int, TextMeshProUGUI> raritytxt = new Dictionary<int, TextMeshProUGUI>();
+        private static Dictionary<int, Slider> raritySliders = new Dictionary<int,Slider>();
         private static Dictionary<CardThemeColor.CardThemeColorType, TextMeshProUGUI> themetxts = new Dictionary<CardThemeColor.CardThemeColorType, TextMeshProUGUI>() { };
         private static Dictionary<CardThemeColor.CardThemeColorType, Slider> themesliders = new Dictionary<CardThemeColor.CardThemeColorType, Slider>() { };
         private static Dictionary<string, TextMeshProUGUI> modtxts = new Dictionary<string, TextMeshProUGUI>() { };
@@ -58,6 +58,9 @@ namespace DeckCustomization
         internal static Dictionary<CardInfo.Rarity, float> RarityRarities = new Dictionary<CardInfo.Rarity, float>() { };
         private static Dictionary<CardThemeColor.CardThemeColorType, ConfigEntry<float>> ThemeRaritiesConfig = new Dictionary<CardThemeColor.CardThemeColorType, ConfigEntry<float>>() { };
         internal static Dictionary<CardThemeColor.CardThemeColorType, float> ThemeRarities = new Dictionary<CardThemeColor.CardThemeColorType, float>() { };
+
+        internal static Array rarityValues;
+
         internal static List<CardInfo> defaultCards
         {
             get
@@ -144,11 +147,23 @@ namespace DeckCustomization
                 }
 
             });
-
             // rarity
-            RarityRaritiesConfig[CardInfo.Rarity.Common] = Config.Bind(CompatibilityModName, "Common", RarityUtils.defaultCommon, "Relative rarity of Common cards on a scale of 0 (disabled) to 1 (common)");
-            RarityRaritiesConfig[CardInfo.Rarity.Uncommon] = Config.Bind(CompatibilityModName, "Uncommon", RarityUtils.defaultUncommon, "Relative rarity of Uncommon cards on a scale of 0 (disabled) to 1 (common)");
-            RarityRaritiesConfig[CardInfo.Rarity.Rare] = Config.Bind(CompatibilityModName, "Rare", RarityUtils.defaultRare, "Relative rarity of Rare cards on a scale of 0 (disabled) to 1 (common)");
+            rarityValues = Enum.GetValues(typeof(CardInfo.Rarity));
+            if (rarityValues.Length == 3)
+            {
+                RarityRaritiesConfig[CardInfo.Rarity.Common] = Config.Bind(CompatibilityModName, "Common", RarityUtils.defaultCommon, "Relative rarity of Common cards on a scale of 0 (disabled) to 1 (common)");
+                RarityRaritiesConfig[CardInfo.Rarity.Uncommon] = Config.Bind(CompatibilityModName, "Uncommon", RarityUtils.defaultUncommon, "Relative rarity of Uncommon cards on a scale of 0 (disabled) to 1 (common)");
+                RarityRaritiesConfig[CardInfo.Rarity.Rare] = Config.Bind(CompatibilityModName, "Rare", RarityUtils.defaultRare, "Relative rarity of Rare cards on a scale of 0 (disabled) to 1 (common)");
+                rarityValues = new float[] { RarityUtils.defaultCommon, RarityUtils.defaultUncommon, RarityUtils.defaultRare };
+            }
+            else
+            {
+                for (int i = 0; i < rarityValues.Length; i++)
+                {
+                    raritytxt[i] = new TextMeshProUGUI();
+                    RarityRaritiesConfig[(CardInfo.Rarity)i] = Config.Bind(CompatibilityModName, ((CardInfo.Rarity)i).ToString(), (float)rarityValues.GetValue(i), $"Relative rarity of {(CardInfo.Rarity)i} cards on a scale of 0 (disabled) to 1 (common)");
+                }
+            }
 
             // cardtheme
             ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.ColdBlue] = Config.Bind(CompatibilityModName, "ColdBlue", RarityUtils.defaultGeneralRarity, "Relative rarity of ColdBlue cards on a scale of 0 (disabled) to 1 (common)");
@@ -163,9 +178,8 @@ namespace DeckCustomization
 
 
             // rarity
-            RarityRarities[CardInfo.Rarity.Common] = RarityRaritiesConfig[CardInfo.Rarity.Common].Value;
-            RarityRarities[CardInfo.Rarity.Uncommon] = RarityRaritiesConfig[CardInfo.Rarity.Uncommon].Value;
-            RarityRarities[CardInfo.Rarity.Rare] = RarityRaritiesConfig[CardInfo.Rarity.Rare].Value;
+            for (int i = 0; i < rarityValues.Length; i++)
+                RarityRarities[(CardInfo.Rarity)i] = RarityRaritiesConfig[(CardInfo.Rarity)i].Value;
 
             // cardtheme
             ThemeRarities[CardThemeColor.CardThemeColorType.ColdBlue] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.ColdBlue].Value;
@@ -231,12 +245,12 @@ namespace DeckCustomization
         }
         private static void UpdatePercs()
         {
-            commontxt.text = String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Common) * 100f) + "% COMMON";
-            commontxt.color = RarityUtils.RarityColorLerp(RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Common));
-            uncommontxt.text = String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Uncommon) * 100f) + "% UNCOMMON";
-            uncommontxt.color = RarityUtils.RarityColorLerp(RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Uncommon));
-            raretxt.text = String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Rare) * 100f) + "% RARE";
-            raretxt.color = RarityUtils.RarityColorLerp(RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Rare));
+
+            for (int i = 0; i < rarityValues.Length; i++)
+            {
+                raritytxt[i].text = String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc((CardInfo.Rarity)i) * 100f) + $"% {((CardInfo.Rarity)i).ToString().ToUpper()}";
+                raritytxt[i].color = RarityUtils.RarityColorLerp(RarityUtils.GetRarityAsPerc((CardInfo.Rarity)i));
+            }
 
             foreach (CardThemeColor.CardThemeColorType theme in themetxts.Keys.ToArray())
             {
@@ -297,23 +311,22 @@ namespace DeckCustomization
                 }
                 UpdatePercs();
             }
-            commontxt = CreateSliderWithoutInput(String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Common) * 100f) + "% Common", menu, 30, 0f, 100f, 100 * RarityRarities[CardInfo.Rarity.Common], val => UpdateRarity(val, CardInfo.Rarity.Common), out commonSlider, true).GetComponentsInChildren<TextMeshProUGUI>()[2];
-            uncommontxt = CreateSliderWithoutInput(String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Uncommon) * 100f) + "% Uncommon", menu, 30, 0f, 100f, 100 * RarityRarities[CardInfo.Rarity.Uncommon], val => UpdateRarity(val, CardInfo.Rarity.Uncommon), out uncommonSlider, true).GetComponentsInChildren<TextMeshProUGUI>()[2];
-            raretxt = CreateSliderWithoutInput(String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(CardInfo.Rarity.Rare) * 100f) + "% Rare", menu, 30, 0f, 100f, 100 * RarityRarities[CardInfo.Rarity.Rare], val => UpdateRarity(val, CardInfo.Rarity.Rare), out rareSlider, true).GetComponentsInChildren<TextMeshProUGUI>()[2];
+            for (int i = 0; i < rarityValues.Length; i++) 
+            {
+                CardInfo.Rarity rarity = (CardInfo.Rarity)i;
+                raritytxt[i] = CreateSliderWithoutInput(String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(rarity) * 100f) + $"% {rarity}", menu, 30, 0f, 100f, 100 * RarityRarities[rarity], val => UpdateRarity(val, rarity), out Slider slider, true).GetComponentsInChildren<TextMeshProUGUI>()[2];
+                raritySliders[i] = slider;
+            }
             void ResetRarities()
             {
-                RarityRarities[CardInfo.Rarity.Common] = RarityUtils.defaultCommon;
-                RarityRaritiesConfig[CardInfo.Rarity.Common].Value = RarityUtils.defaultCommon;
-                UpdateRarity(100 * RarityUtils.defaultCommon, CardInfo.Rarity.Common);
-                commonSlider.value = 100 * RarityUtils.defaultCommon;
-                RarityRarities[CardInfo.Rarity.Uncommon] = RarityUtils.defaultUncommon;
-                RarityRaritiesConfig[CardInfo.Rarity.Uncommon].Value = RarityUtils.defaultUncommon;
-                UpdateRarity(100 * RarityUtils.defaultUncommon, CardInfo.Rarity.Uncommon);
-                uncommonSlider.value = 100 * RarityUtils.defaultUncommon;
-                RarityRarities[CardInfo.Rarity.Rare] = RarityUtils.defaultRare;
-                RarityRaritiesConfig[CardInfo.Rarity.Rare].Value = RarityUtils.defaultRare;
-                UpdateRarity(100 * RarityUtils.defaultRare, CardInfo.Rarity.Rare);
-                rareSlider.value = 100 * RarityUtils.defaultRare;
+                for (int i = 0; i < rarityValues.Length; i++)
+                {
+                    CardInfo.Rarity rarity = (CardInfo.Rarity)i;
+                    RarityRarities[rarity] = (float)rarityValues.GetValue(i);
+                    RarityRaritiesConfig[rarity].Value = (float)rarityValues.GetValue(i);
+                    UpdateRarity(100 * (float)rarityValues.GetValue(i), rarity);
+                    raritySliders[i].value = 100 * (float)rarityValues.GetValue(i);
+                }
                 UpdatePercs();
             }
             MenuHandler.CreateButton("Reset Rarities", menu, ResetRarities, 30);
@@ -346,19 +359,13 @@ namespace DeckCustomization
                     modsliders[mod].value = 100 * RarityUtils.defaultGeneralRarity;
                 }
 
-
-                RarityRarities[CardInfo.Rarity.Common] = RarityUtils.defaultCommon;
-                RarityRaritiesConfig[CardInfo.Rarity.Common].Value = RarityUtils.defaultCommon;
-                UpdateRarity(100 * RarityUtils.defaultCommon, CardInfo.Rarity.Common);
-                commonSlider.value = 100 * RarityUtils.defaultCommon;
-                RarityRarities[CardInfo.Rarity.Uncommon] = RarityUtils.defaultUncommon;
-                RarityRaritiesConfig[CardInfo.Rarity.Uncommon].Value = RarityUtils.defaultUncommon;
-                UpdateRarity(100 * RarityUtils.defaultUncommon, CardInfo.Rarity.Uncommon);
-                uncommonSlider.value = 100 * RarityUtils.defaultUncommon;
-                RarityRarities[CardInfo.Rarity.Rare] = RarityUtils.defaultRare;
-                RarityRaritiesConfig[CardInfo.Rarity.Rare].Value = RarityUtils.defaultRare;
-                UpdateRarity(100 * RarityUtils.defaultRare, CardInfo.Rarity.Rare);
-                rareSlider.value = 100 * RarityUtils.defaultRare;
+                for (int i = 0; i < rarityValues.Length; i++)
+                {
+                    RarityRarities[(CardInfo.Rarity)i] = (float)rarityValues.GetValue(i);
+                    RarityRaritiesConfig[(CardInfo.Rarity)i].Value = (float)rarityValues.GetValue(i);
+                    UpdateRarity(100 * (float)rarityValues.GetValue(i), (CardInfo.Rarity)i);
+                    raritySliders[i].value = 100 * (float)rarityValues.GetValue(i);
+                }
 
                 for (int i = 0; i < ThemeRarities.Keys.Count; i++)
                 {

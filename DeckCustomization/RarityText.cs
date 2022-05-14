@@ -84,23 +84,21 @@ namespace DeckCustomization
                 {
                     case CardInfo.Rarity.Common:
                         {
-                            text += "Common";
                             color = RarityUtils.commonColor;
                             break;
                         }
                     case CardInfo.Rarity.Uncommon:
                         {
-                            text += "Uncommon";
                             color = RarityUtils.uncommonColor;
                             break;
                         }
                     case CardInfo.Rarity.Rare:
                         {
-                            text += "Rare";
                             color = RarityUtils.rareColor;
                             break;
                         }
                 }
+                text += card.rarity.ToString();
             }
             // add a space if both are enabled
             if (DeckCustomization.DisplayRarities && DeckCustomization.DisplayPerc)

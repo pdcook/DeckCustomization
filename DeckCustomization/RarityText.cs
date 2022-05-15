@@ -80,27 +80,9 @@ namespace DeckCustomization
             Color color = Color.grey;
             if (DeckCustomization.DisplayRarities)
             {
-                switch(card.rarity)
-                {
-                    case CardInfo.Rarity.Common:
-                        {
-                            text += "Common";
-                            color = RarityUtils.commonColor;
-                            break;
-                        }
-                    case CardInfo.Rarity.Uncommon:
-                        {
-                            text += "Uncommon";
-                            color = RarityUtils.uncommonColor;
-                            break;
-                        }
-                    case CardInfo.Rarity.Rare:
-                        {
-                            text += "Rare";
-                            color = RarityUtils.rareColor;
-                            break;
-                        }
-                }
+                if (card.rarity == CardInfo.Rarity.Common) color = RarityUtils.commonColor;
+                else color = RarityLib.Utils.RarityUtils.GetRarityData(card.rarity).colorOff;
+                text += card.rarity.ToString();
             }
             // add a space if both are enabled
             if (DeckCustomization.DisplayRarities && DeckCustomization.DisplayPerc)

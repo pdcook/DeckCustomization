@@ -19,6 +19,7 @@ using System.Collections.ObjectModel;
 using UnboundLib.Utils;
 using UnboundLib.Cards;
 using UnityEngine.Events;
+using RarityLib.Utils;
 
 namespace DeckCustomization
 {
@@ -26,8 +27,8 @@ namespace DeckCustomization
     {
 
         internal static Color commonColor = new Color(1f, 1f, 1f, 1f);
-        internal static Color uncommonColor = new Color(0.1745f, 0.6782f, 1f, 1f);
-        internal static Color rareColor = new Color(1f, 0.1765f, 0.7567f, 1f);
+        //internal static Color uncommonColor = new Color(0.1745f, 0.6782f, 1f, 1f);
+        //internal static Color rareColor = new Color(1f, 0.1765f, 0.7567f, 1f);
 
         /*
         * Default Rarities are:
@@ -37,9 +38,9 @@ namespace DeckCustomization
         */
 
         internal const float defaultGeneralRarity = 0.5f;
-        internal const float defaultCommon = 1f;
-        internal const float defaultUncommon = 0.4f;
-        internal const float defaultRare = 0.1f;
+        //internal const float defaultCommon = 1f;
+        //internal const float defaultUncommon = 0.4f;
+        //internal const float defaultRare = 0.1f;
         internal static Color RarityColorLerp(float p)
         {
             if (p == 0f)
@@ -47,22 +48,28 @@ namespace DeckCustomization
                 return Color.grey;
             }
 
-            float Z = (defaultCommon + defaultUncommon + defaultRare);
+            List<Rarity> rarities = new List<Rarity>();
 
-            Color c1, c2;
-            float p_;
-            if (p < defaultUncommon)
+            float Z = 0;
+            foreach (CardInfo.Rarity rarity in DeckCustomization.RarityRarities.Keys)
             {
-                c1 = rareColor;
-                c2 = uncommonColor;
-                p_ = Mathf.Clamp01((Mathf.Clamp01(p) - defaultRare / Z) / ((defaultUncommon - defaultRare) / Z));
+                rarities.Add(RarityLib.Utils.RarityUtils.GetRarityData(rarity));
+                Z += rarities.Last().relativeRarity;
             }
-            else
+            rarities.Sort((r1, r2) => r2.relativeRarity.CompareTo(r1.relativeRarity));
+
+            Color c1 = rarities[1].color, c2 = rarities[0].color;
+            float p_ = Mathf.Clamp01((Mathf.Clamp01(p) - rarities[1].relativeRarity / Z) / ((rarities[0].relativeRarity - rarities[1].relativeRarity) / Z)); 
+            for(int i = 1; i < rarities.Count-1; i++)
             {
-                c1 = uncommonColor;
-                c2 = commonColor;
-                p_ = Mathf.Clamp01((Mathf.Clamp01(p) - defaultUncommon / Z) / ((defaultCommon - defaultUncommon) / Z));
+                if(p < rarities[i].relativeRarity)
+                {
+                    c1 = rarities[i+1].color;
+                    c2 = rarities[i].color;
+                    p_ = Mathf.Clamp01((Mathf.Clamp01(p) - rarities[i+1].relativeRarity / Z) / ((rarities[i].relativeRarity - rarities[i+1].relativeRarity) / Z));
+                }
             }
+            if (c2 == RarityLib.Utils.RarityUtils.GetRarityData(CardInfo.Rarity.Common).color) c2 = commonColor;
             return Color.Lerp(c1, c2, p_);
 
         }

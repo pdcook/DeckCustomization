@@ -6,7 +6,7 @@ This mod adds settings to the mod options menu which allow for the fine-tuning o
 ## General Rarity Adjustment
 ----------------------------
 
-The Common, Uncommon, and Rare rarities can be adjusted from their default values of 66.67%, 26.67% and 6.67%.
+The rarities can be adjusted from their default values to whatever you want! The default rarities of Common, Uncommon, and Rare are 66.67%, 26.67% and 6.67% respectively.
 
 To disable a rarity altogether, simply set its rarity to 0%.
 

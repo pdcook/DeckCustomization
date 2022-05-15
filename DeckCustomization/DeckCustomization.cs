@@ -26,7 +26,8 @@ namespace DeckCustomization
     [BepInDependency("com.willis.rounds.unbound", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.0.6")]
+    [BepInDependency("root.rarity.lib", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInPlugin(ModId, ModName, "0.1.0")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
     {
@@ -181,7 +182,7 @@ namespace DeckCustomization
 
 
             // add credits
-            Unbound.RegisterCredits(ModName, new string[] { "Pykess" }, new string[] { "github", "Buy me a coffee" }, new string[] { "https://github.com/pdcook/DeckCustomization", "https://www.buymeacoffee.com/Pykess" });
+            Unbound.RegisterCredits(ModName, new string[] { "Pykess", "Root (RarityLib support)"}, new string[] { "github", "Support Pykess" }, new string[] { "https://github.com/pdcook/DeckCustomization", "https://ko-fi.com/pykess" });
              
             // add GUI to modoptions menu
             Unbound.RegisterMenu(ModName, () => { }, (menu) => Unbound.Instance.StartCoroutine(SetupGUI(menu)), null, false);

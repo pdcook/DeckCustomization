@@ -20,6 +20,7 @@ using UnboundLib.Utils;
 using UnboundLib.Cards;
 using UnityEngine.Events;
 using RarityLib.Utils;
+using System.Text.RegularExpressions;
 
 namespace DeckCustomization
 {
@@ -126,19 +127,7 @@ namespace DeckCustomization
         }
         internal static string GetThemeAsString(CardThemeColor.CardThemeColorType theme)
         {
-            return theme switch
-            {
-                CardThemeColor.CardThemeColorType.DestructiveRed => "Destructive Red",
-                CardThemeColor.CardThemeColorType.FirepowerYellow => "Firepower Yellow",
-                CardThemeColor.CardThemeColorType.DefensiveBlue => "Defensive Blue",
-                CardThemeColor.CardThemeColorType.TechWhite => "Tech White",
-                CardThemeColor.CardThemeColorType.EvilPurple => "Evil Purple",
-                CardThemeColor.CardThemeColorType.PoisonGreen => "Poison Green",
-                CardThemeColor.CardThemeColorType.NatureBrown => "Nature Brown",
-                CardThemeColor.CardThemeColorType.ColdBlue => "Cold Blue",
-                CardThemeColor.CardThemeColorType.MagicPink => "Magic Pink",
-                _ => "",
-            };
+            return Regex.Replace(theme.ToString(), @"[A-Z]", " $&", RegexOptions.None).Substring(1);
         }
         internal static Color GetThemeColor(CardThemeColor.CardThemeColorType theme)
         {

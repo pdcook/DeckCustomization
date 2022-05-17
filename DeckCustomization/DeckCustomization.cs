@@ -129,12 +129,19 @@ namespace DeckCustomization
 
                 }
 
+                // cardtheme
+                foreach (CardThemeColor.CardThemeColorType theme in allCards.Select(c => c.colorTheme))
+                {
+                    ThemeRaritiesConfig[theme] = Config.Bind(CompatibilityModName, theme.ToString(), RarityUtils.defaultGeneralRarity, $"Relative rarity of {theme} cards on a scale of 0 (disabled) to 1 (common)");
+                }
+
                 // rarity
                 foreach (CardInfo.Rarity r in allCards.Select(c => c.rarity))
                 {
                     Rarity rarity = RarityLib.Utils.RarityUtils.GetRarityData(r);
                     RarityRaritiesConfig[rarity.value] = Config.Bind(CompatibilityModName, rarity.name, rarity.relativeRarity, $"Relative rarity of {rarity.name} cards on a scale of 0 (disabled) to 1 (common)");
                 }
+
                 foreach (CardInfo card in allCards)
                 {
                     if (card.gameObject.GetComponent<CustomCard>() != null)
@@ -155,31 +162,11 @@ namespace DeckCustomization
                 foreach(CardInfo.Rarity r in RarityRaritiesConfig.Keys)
                     RarityRarities[r] = RarityRaritiesConfig[r].Value;
 
+                // cardtheme
+                foreach (CardThemeColor.CardThemeColorType theme in ThemeRaritiesConfig.Keys)
+                    ThemeRarities[theme] = ThemeRaritiesConfig[theme].Value;
+
             });
-
-            // cardtheme
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.ColdBlue] = Config.Bind(CompatibilityModName, "ColdBlue", RarityUtils.defaultGeneralRarity, "Relative rarity of ColdBlue cards on a scale of 0 (disabled) to 1 (common)");
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.DefensiveBlue] = Config.Bind(CompatibilityModName, "DefensiveBlue", RarityUtils.defaultGeneralRarity, "Relative rarity of DefensiveBlue cards on a scale of 0 (disabled) to 1 (common)");
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.DestructiveRed] = Config.Bind(CompatibilityModName, "DestructiveRed", RarityUtils.defaultGeneralRarity, "Relative rarity of DestructiveRed cards on a scale of 0 (disabled) to 1 (common)");
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.EvilPurple] = Config.Bind(CompatibilityModName, "EvilPurple", RarityUtils.defaultGeneralRarity, "Relative rarity of EvilPurple cards on a scale of 0 (disabled) to 1 (common)");
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.FirepowerYellow] = Config.Bind(CompatibilityModName, "FirepowerYellow", RarityUtils.defaultGeneralRarity, "Relative rarity of FirepowerYellow cards on a scale of 0 (disabled) to 1 (common)");
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.MagicPink] = Config.Bind(CompatibilityModName, "MagicPink", RarityUtils.defaultGeneralRarity, "Relative rarity of MagicPink cards on a scale of 0 (disabled) to 1 (common)");
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.NatureBrown] = Config.Bind(CompatibilityModName, "NatureBrown", RarityUtils.defaultGeneralRarity, "Relative rarity of NatureBrown cards on a scale of 0 (disabled) to 1 (common)");
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.PoisonGreen] = Config.Bind(CompatibilityModName, "PoisonGreen", RarityUtils.defaultGeneralRarity, "Relative rarity of PoisonGreen cards on a scale of 0 (disabled) to 1 (common)");
-            ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.TechWhite] = Config.Bind(CompatibilityModName, "TechWhite", RarityUtils.defaultGeneralRarity, "Relative rarity of TechWhite cards on a scale of 0 (disabled) to 1 (common)");
-
-
-            // cardtheme
-            ThemeRarities[CardThemeColor.CardThemeColorType.ColdBlue] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.ColdBlue].Value;
-            ThemeRarities[CardThemeColor.CardThemeColorType.DefensiveBlue] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.DefensiveBlue].Value;
-            ThemeRarities[CardThemeColor.CardThemeColorType.DestructiveRed] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.DestructiveRed].Value;
-            ThemeRarities[CardThemeColor.CardThemeColorType.EvilPurple] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.EvilPurple].Value;
-            ThemeRarities[CardThemeColor.CardThemeColorType.FirepowerYellow] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.FirepowerYellow].Value;
-            ThemeRarities[CardThemeColor.CardThemeColorType.MagicPink] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.MagicPink].Value;
-            ThemeRarities[CardThemeColor.CardThemeColorType.NatureBrown] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.NatureBrown].Value;
-            ThemeRarities[CardThemeColor.CardThemeColorType.PoisonGreen] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.PoisonGreen].Value;
-            ThemeRarities[CardThemeColor.CardThemeColorType.TechWhite] = ThemeRaritiesConfig[CardThemeColor.CardThemeColorType.TechWhite].Value;
-
 
             // add credits
             Unbound.RegisterCredits(ModName, new string[] { "Pykess", "Root (RarityLib support)"}, new string[] { "github", "Support Pykess" }, new string[] { "https://github.com/pdcook/DeckCustomization", "https://ko-fi.com/pykess" });

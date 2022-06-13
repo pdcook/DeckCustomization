@@ -55,25 +55,32 @@ namespace DeckCustomization
             foreach (CardInfo.Rarity rarity in DeckCustomization.RarityRarities.Keys)
             {
                 rarities.Add(RarityLib.Utils.RarityUtils.GetRarityData(rarity));
-                Z += rarities.Last().relativeRarity;
+                Z += RarityLib.Utils.RarityUtils.GetRarityData(rarity).relativeRarity;
             }
-            rarities.Sort((r1, r2) => r2.relativeRarity.CompareTo(r1.relativeRarity));
+            rarities.Sort((r1, r2) => r1.relativeRarity.CompareTo(r2.relativeRarity));
 
-            Color c1 = rarities[1].color, c2 = rarities[0].color;
-            float p_ = Mathf.Clamp01((Mathf.Clamp01(p) - rarities[1].relativeRarity / Z) / ((rarities[0].relativeRarity - rarities[1].relativeRarity) / Z)); 
-            for(int i = 1; i < rarities.Count-1; i++)
+            Color c1 = rarities[rarities.Count - 2].color,
+            c2 = rarities[rarities.Count-1].color;
+            float p_ = (p - rarities[rarities.Count - 2].relativeRarity / Z) / ((rarities[rarities.Count-1].relativeRarity - rarities[rarities.Count - 2].relativeRarity) / Z); ;
+
+
+            for(int i = 1; i < rarities.Count - 1; i++)
             {
-                if(p < rarities[i].relativeRarity)
+                if(p < (rarities[i].relativeRarity/Z))
                 {
-                    c1 = rarities[i+1].color;
+                    c1 = rarities[i-1].color;
                     c2 = rarities[i].color;
-                    p_ = Mathf.Clamp01((Mathf.Clamp01(p) - rarities[i+1].relativeRarity / Z) / ((rarities[i].relativeRarity - rarities[i+1].relativeRarity) / Z));
+                    p_ = (p - rarities[i-1].relativeRarity / Z) / ((rarities[i].relativeRarity - rarities[i-1].relativeRarity) / Z);
+                    break;
                 }
             }
             if (c2 == RarityLib.Utils.RarityUtils.GetRarityData(CardInfo.Rarity.Common).color) c2 = commonColor;
+            if (c1 == RarityLib.Utils.RarityUtils.GetRarityData(CardInfo.Rarity.Common).color) c1 = commonColor;
+            UnityEngine.Debug.Log($"{p} , {p_}");
             return Color.Lerp(c1, c2, p_);
 
         }
+        
         internal static float mod_Z
         {
             get

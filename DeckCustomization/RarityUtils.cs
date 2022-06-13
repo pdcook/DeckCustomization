@@ -76,7 +76,6 @@ namespace DeckCustomization
             }
             if (c2 == RarityLib.Utils.RarityUtils.GetRarityData(CardInfo.Rarity.Common).color) c2 = commonColor;
             if (c1 == RarityLib.Utils.RarityUtils.GetRarityData(CardInfo.Rarity.Common).color) c1 = commonColor;
-            UnityEngine.Debug.Log($"{p} , {p_}");
             return Color.Lerp(c1, c2, p_);
 
         }

@@ -27,7 +27,7 @@ namespace DeckCustomization
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("root.rarity.lib", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.2.0")]
+    [BepInPlugin(ModId, ModName, "0.2.1")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
     {
@@ -60,6 +60,7 @@ namespace DeckCustomization
         internal static Dictionary<CardInfo.Rarity, float> RarityRarities = new Dictionary<CardInfo.Rarity, float>() { };
         private static Dictionary<CardThemeColor.CardThemeColorType, ConfigEntry<float>> ThemeRaritiesConfig = new Dictionary<CardThemeColor.CardThemeColorType, ConfigEntry<float>>() { };
         internal static Dictionary<CardThemeColor.CardThemeColorType, float> ThemeRarities = new Dictionary<CardThemeColor.CardThemeColorType, float>() { };
+        private static float MaxCardRarity = 0;
 
         internal static List<CardInfo> defaultCards
         {
@@ -140,6 +141,7 @@ namespace DeckCustomization
                 {
                     Rarity rarity = RarityLib.Utils.RarityUtils.GetRarityData(r);
                     RarityRaritiesConfig[rarity.value] = Config.Bind(CompatibilityModName, rarity.name, rarity.relativeRarity, $"Relative rarity of {rarity.name} cards on a scale of 0 (disabled) to 1 (common)");
+                    MaxCardRarity = Mathf.Max(MaxCardRarity, rarity.relativeRarity); //find the most common rarity to use as the max value for the rarity sliders
                 }
 
                 foreach (CardInfo card in allCards)
@@ -300,7 +302,7 @@ namespace DeckCustomization
             rarities.Sort((r1, r2) => RarityLib.Utils.RarityUtils.GetRarityData(r2).relativeRarity.CompareTo(RarityLib.Utils.RarityUtils.GetRarityData(r1).relativeRarity));
             foreach (CardInfo.Rarity rarity in rarities)
             {
-                raritytxt[rarity] = CreateSliderWithoutInput(String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(rarity) * 100f) + $"% {rarity}", menu, 30, 0f, 100f, 100 * RarityRarities[rarity], val => UpdateRarity(val, rarity), out Slider slider, true).GetComponentsInChildren<TextMeshProUGUI>()[2];
+                raritytxt[rarity] = CreateSliderWithoutInput(String.Format("{0:0.##}", RarityUtils.GetRarityAsPerc(rarity) * 100f) + $"% {rarity}", menu, 30, 0f, 100f * MaxCardRarity, 100 * RarityRarities[rarity], val => UpdateRarity(val, rarity), out Slider slider, true).GetComponentsInChildren<TextMeshProUGUI>()[2];
                 raritySliders[rarity] = slider;
             }
 

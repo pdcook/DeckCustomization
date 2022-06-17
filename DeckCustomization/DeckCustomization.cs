@@ -27,7 +27,7 @@ namespace DeckCustomization
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("root.rarity.lib", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.2.1")]
+    [BepInPlugin(ModId, ModName, "0.2.2")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
     {
@@ -178,6 +178,9 @@ namespace DeckCustomization
 
             // handshake to sync settings
             Unbound.RegisterHandshake(DeckCustomization.ModId, this.OnHandShakeCompleted);
+
+            // Hook to tell RarityLib about the ajusted rarities
+            GameModeManager.AddHook(GameModeHooks.HookGameStart, gm => RarityUtils.UpdateRarities());
         }
         private void OnHandShakeCompleted()
         {
@@ -289,6 +292,7 @@ namespace DeckCustomization
             {
                 RarityRarities[rarity] = val / 100f;
                 RarityRaritiesConfig[rarity].Value = val / 100f;
+                RarityLib.Utils.RarityUtils.GetRarityData(rarity).calculatedRarity = val / 100f;
                 if (RarityUtils.rarity_Z == 0f)
                 {
                     val += 1f;

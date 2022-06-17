@@ -97,7 +97,7 @@ namespace DeckCustomization
         }
         internal static float Z
         {
-            get { return DeckCustomization.activeCards.Select(c => DeckCustomization.RarityRarities[c.rarity] * DeckCustomization.ThemeRarities[c.colorTheme] * DeckCustomization.ModRarities[c.gameObject.GetComponent<CustomCard>() != null ? c.gameObject.GetComponent<CustomCard>().GetModName().ToLower() : DeckCustomization.defaultCardsName]).Sum(); }
+            get { return DeckCustomization.activeCards.Select(c => GetRelativeRarity(c.rarity) * GetRelativeRarity(c.colorTheme) * GetRelativeRarity(c.gameObject.GetComponent<CustomCard>() != null ? c.gameObject.GetComponent<CustomCard>().GetModName().ToLower() : DeckCustomization.defaultCardsName)).Sum(); }
         }
         internal static float GetRarityAsPerc(string modName)
         {
@@ -121,7 +121,7 @@ namespace DeckCustomization
         }
         internal static float GetRelativeRarity(CardInfo.Rarity rarity)
         {
-            return DeckCustomization.RarityRarities[rarity];
+            return RarityLib.Utils.RarityUtils.GetRarityData(rarity).calculatedRarity;
         }
         internal static float GetRelativeRarity(CardThemeColor.CardThemeColorType theme)
         {
@@ -129,7 +129,7 @@ namespace DeckCustomization
         }
         internal static float GetRelativeRarity(CardInfo card)
         {
-            return DeckCustomization.RarityRarities[card.rarity] * DeckCustomization.ThemeRarities[card.colorTheme] * DeckCustomization.ModRarities[card.gameObject.GetComponent<CustomCard>() != null ? card.gameObject.GetComponent<CustomCard>().GetModName().ToLower() : DeckCustomization.defaultCardsName];
+            return GetRelativeRarity(card.rarity) * GetRelativeRarity(card.colorTheme) * GetRelativeRarity(card.gameObject.GetComponent<CustomCard>() != null ? card.gameObject.GetComponent<CustomCard>().GetModName().ToLower() : DeckCustomization.defaultCardsName);
         }
         internal static string GetThemeAsString(CardThemeColor.CardThemeColorType theme)
         {
@@ -138,6 +138,14 @@ namespace DeckCustomization
         internal static Color GetThemeColor(CardThemeColor.CardThemeColorType theme)
         {
             return CardChoice.instance.cardThemes.Where(t => t.themeType == theme).First().targetColor;
+        }
+
+        internal static IEnumerator UpdateRarities()
+        {
+            DeckCustomization.RarityRarities.Keys.ToList().ForEach(r =>
+                RarityLib.Utils.RarityUtils.GetRarityData(r).calculatedRarity = DeckCustomization.RarityRarities[r]
+            );
+            yield break;
         }
     }
 

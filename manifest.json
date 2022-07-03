@@ -1,12 +1,12 @@
 {
     "name": "Deck_Customization",
-    "version_number": "0.2.2",
+    "version_number": "0.2.3",
     "website_url": "https://github.com/pdcook/DeckCustomization",
     "description": "Fully adjustable card rarities as well as accessibility options and stats for nerds",
     "dependencies": [
         "Pykess-CardChoiceSpawnUniqueCardPatch-0.1.8",
-        "Pykess-ModdingUtils-0.3.4",
-        "Root-RarityLib-1.1.0",
+        "Pykess-ModdingUtils-0.3.5",
+        "Root-RarityLib-1.1.1",
         "willis81808-UnboundLib-3.1.2",
         "willis81808-MMHook-1.0.0",
 	"BepInEx-BepInExPack_ROUNDS-5.4.1100"

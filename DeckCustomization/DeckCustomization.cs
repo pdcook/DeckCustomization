@@ -27,7 +27,7 @@ namespace DeckCustomization
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("root.rarity.lib", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInPlugin(ModId, ModName, "0.2.3")]
+    [BepInPlugin(ModId, ModName, "0.2.4")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
     {
@@ -116,14 +116,7 @@ namespace DeckCustomization
                 string mod = defaultCardsName;
                 foreach (CardInfo card in allCards)
                 {
-                    if (card.gameObject.GetComponent<CustomCard>() != null)
-                    {
-                        mod = card.gameObject.GetComponent<CustomCard>().GetModName().ToLower();
-                    }
-                    else
-                    {
-                        mod = defaultCardsName;
-                    }
+                    mod = CardManager.cards.Values.First(c => c.cardInfo == card).category;
 
                     // mod
                     ModRaritiesConfig[mod] = Config.Bind(CompatibilityModName, mod, RarityUtils.defaultGeneralRarity, "Relative rarity of " + mod + " cards on a scale of 0 (disabled) to 1 (common)");
@@ -131,13 +124,13 @@ namespace DeckCustomization
                 }
 
                 // cardtheme
-                foreach (CardThemeColor.CardThemeColorType theme in allCards.Select(c => c.colorTheme))
+                foreach (CardThemeColor.CardThemeColorType theme in Enum.GetValues(typeof(CardThemeColor.CardThemeColorType)))
                 {
                     ThemeRaritiesConfig[theme] = Config.Bind(CompatibilityModName, theme.ToString(), RarityUtils.defaultGeneralRarity, $"Relative rarity of {theme} cards on a scale of 0 (disabled) to 1 (common)");
                 }
 
                 // rarity
-                foreach (CardInfo.Rarity r in allCards.Select(c => c.rarity))
+                foreach (CardInfo.Rarity r in Enum.GetValues(typeof(CardInfo.Rarity)))
                 {
                     Rarity rarity = RarityLib.Utils.RarityUtils.GetRarityData(r);
                     RarityRaritiesConfig[rarity.value] = Config.Bind(CompatibilityModName, rarity.name, rarity.relativeRarity, $"Relative rarity of {rarity.name} cards on a scale of 0 (disabled) to 1 (common)");
@@ -146,14 +139,7 @@ namespace DeckCustomization
 
                 foreach (CardInfo card in allCards)
                 {
-                    if (card.gameObject.GetComponent<CustomCard>() != null)
-                    {
-                        mod = card.gameObject.GetComponent<CustomCard>().GetModName().ToLower();
-                    }
-                    else
-                    {
-                        mod = defaultCardsName;
-                    }
+                    mod = CardManager.cards.Values.First(c => c.cardInfo == card).category;
 
                     // mod
                     ModRarities[mod] = ModRaritiesConfig[mod].Value;

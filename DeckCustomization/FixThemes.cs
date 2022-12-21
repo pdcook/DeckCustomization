@@ -28,8 +28,10 @@ namespace DeckCustomization
          * 
          * BigBullet -> DestructiveRed
          * BuckShot -> FirepowerYellow
+         * DrillAmmo -> TechWhite
          * Echo -> DefensiveBlue
          * Empower -> FirepowerYellow
+         * ExplosiveBullet -> FirepowerYellow
          * Implode -> MagicPink
          * Saw -> TechWhite
          * Shockwave -> DestructiveRed
@@ -51,10 +53,16 @@ namespace DeckCustomization
                     case "buckshot":
                         card.colorTheme = CardThemeColor.CardThemeColorType.FirepowerYellow;
                         break;
+                    case "drill ammo":
+                        card.colorTheme = CardThemeColor.CardThemeColorType.TechWhite;
+                        break;
                     case "echo":
                         card.colorTheme = CardThemeColor.CardThemeColorType.DefensiveBlue;
                         break;
                     case "empower":
+                        card.colorTheme = CardThemeColor.CardThemeColorType.FirepowerYellow;
+                        break;
+                    case "explosive bullet":
                         card.colorTheme = CardThemeColor.CardThemeColorType.FirepowerYellow;
                         break;
                     case "implode":

@@ -21,6 +21,7 @@ using UnboundLib.Cards;
 using UnityEngine.Events;
 using RarityLib.Utils;
 using System.Text.RegularExpressions;
+using ModdingUtils.Utils;
 
 namespace DeckCustomization
 {
@@ -97,7 +98,7 @@ namespace DeckCustomization
         }
         internal static float Z
         {
-            get { return DeckCustomization.activeCards.Select(c => GetRelativeRarity(c.rarity) * GetRelativeRarity(c.colorTheme) * GetRelativeRarity(c.gameObject.GetComponent<CustomCard>() != null ? c.gameObject.GetComponent<CustomCard>().GetModName().ToLower() : DeckCustomization.defaultCardsName) * RarityLib.Utils.RarityUtils.GetCardRarityModifier(c)).Sum(); }
+            get { return DeckCustomization.activeCards.Select(c => GetRelativeRarity(c.rarity) * GetRelativeRarity(c.colorTheme) * GetRelativeRarity(CardManager.cards.Values.First(c => c.cardInfo == card).category) * RarityLib.Utils.RarityUtils.GetCardRarityModifier(c)).Sum(); }
         }
         internal static float GetRarityAsPerc(string modName)
         {
@@ -129,7 +130,7 @@ namespace DeckCustomization
         }
         internal static float GetRelativeRarity(CardInfo card)
         {
-            return GetRelativeRarity(card.rarity) * GetRelativeRarity(card.colorTheme) * GetRelativeRarity(card.gameObject.GetComponent<CustomCard>() != null ? card.gameObject.GetComponent<CustomCard>().GetModName().ToLower() : DeckCustomization.defaultCardsName) * RarityLib.Utils.RarityUtils.GetCardRarityModifier(card);
+            return GetRelativeRarity(card.rarity) * GetRelativeRarity(card.colorTheme) * GetRelativeRarity(CardManager.cards.Values.First(c => c.cardInfo == card).category) * RarityLib.Utils.RarityUtils.GetCardRarityModifier(card);
         }
         internal static string GetThemeAsString(CardThemeColor.CardThemeColorType theme)
         {

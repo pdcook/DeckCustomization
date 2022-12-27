@@ -55,6 +55,7 @@
     <Reference Include="RarityLib">
       <HintPath>$(RoundsFolder)\BepInEx\plugins\RarityLib.dll</HintPath>
     </Reference>
+    <Reference Include="CardThemeLib">
     <Reference Include="UnboundLib">
       <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundLib\UnboundLib.dll</HintPath>
     </Reference>

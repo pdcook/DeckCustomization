@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
@@ -56,6 +56,8 @@
       <HintPath>$(RoundsFolder)\BepInEx\plugins\RarityLib.dll</HintPath>
     </Reference>
     <Reference Include="CardThemeLib">
+      <HintPath>$(RoundsFolder)\BepInEx\plugins\CardThemeLib.dll</HintPath>
+    </Reference>
     <Reference Include="UnboundLib">
       <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundLib\UnboundLib.dll</HintPath>
     </Reference>

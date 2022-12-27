@@ -27,6 +27,7 @@ namespace DeckCustomization
     [BepInDependency("pykess.rounds.plugins.moddingutils", BepInDependency.DependencyFlags.HardDependency)] // utilities for cards and cardbars
     [BepInDependency("pykess.rounds.plugins.cardchoicespawnuniquecardpatch", BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency("root.rarity.lib", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("root.cardtheme.lib", BepInDependency.DependencyFlags.HardDependency)]
     [BepInPlugin(ModId, ModName, "0.2.4")]
     [BepInProcess("Rounds.exe")]
     public class DeckCustomization : BaseUnityPlugin
@@ -175,12 +176,12 @@ namespace DeckCustomization
                 // sync twice just to be safe
                 for (int i = 0; i<2; i++)
                 {
-                    NetworkingManager.RPC_Others(typeof(DeckCustomization), nameof(SyncSettings), new object[] { BetterMethod, ModRarities.Keys.ToArray(), ModRarities.Values.ToArray(), RarityRarities.Keys.Select(k => (byte)k).ToArray(), RarityRarities.Values.ToArray(), ThemeRarities.Keys.Select(k=>(byte)k).ToArray(), ThemeRarities.Values.ToArray() });
+                    NetworkingManager.RPC_Others(typeof(DeckCustomization), nameof(SyncSettings), new object[] { BetterMethod, ModRarities.Keys.ToArray(), ModRarities.Values.ToArray(), RarityRarities.Keys.Select(k => k.ToString()).ToArray(), RarityRarities.Values.ToArray(), ThemeRarities.Keys.Select(k=>k.ToString()).ToArray(), ThemeRarities.Values.ToArray() });
                 }
             }
         }
         [UnboundRPC]
-        private static void SyncSettings(bool better, string[] mods, float[] modrarities, byte[] rarities, float[] rarityrarities, byte[] themes, float[] themerarities)
+        private static void SyncSettings(bool better, string[] mods, float[] modrarities, string[] rarities, float[] rarityrarities, string[] themes, float[] themerarities)
         {
             //BetterMethod = better;
 
@@ -190,11 +191,11 @@ namespace DeckCustomization
             }
             for (int i = 0; i<rarities.Length; i++)
             {
-                RarityRarities[(CardInfo.Rarity)rarities[i]] = rarityrarities[i];
+                RarityRarities[RarityLib.Utils.RarityUtils.GetRarity(rarities[i])] = rarityrarities[i];
             }
             for (int i = 0; i<themes.Length; i++)
             {
-                ThemeRarities[(CardThemeColor.CardThemeColorType)themes[i]] = themerarities[i];
+                ThemeRarities[CardThemeLib.CardThemeLib.instance.CreateOrGetType(themes[i])] = themerarities[i];
             }
 
         }

@@ -98,7 +98,7 @@ namespace DeckCustomization
         }
         internal static float Z
         {
-            get { return DeckCustomization.activeCards.Select(c => GetRelativeRarity(c.rarity) * GetRelativeRarity(c.colorTheme) * GetRelativeRarity(CardManager.cards.Values.First(c => c.cardInfo == card).category) * RarityLib.Utils.RarityUtils.GetCardRarityModifier(c)).Sum(); }
+            get { return DeckCustomization.activeCards.Select(c => GetRelativeRarity(c.rarity) * GetRelativeRarity(c.colorTheme) * GetRelativeRarity(CardManager.cards.Values.First(card => card.cardInfo == c).category) * RarityLib.Utils.RarityUtils.GetCardRarityModifier(c)).Sum(); }
         }
         internal static float GetRarityAsPerc(string modName)
         {

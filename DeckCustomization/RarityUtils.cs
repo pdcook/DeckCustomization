@@ -119,7 +119,7 @@ namespace DeckCustomization
         internal static float GetRelativeRarity(string modName)
         {
             return DeckCustomization.ModRarities[modName];
-        }
+        }   
         internal static float GetRelativeRarity(CardInfo.Rarity rarity)
         {
             return RarityLib.Utils.RarityUtils.GetRarityData(rarity).calculatedRarity;

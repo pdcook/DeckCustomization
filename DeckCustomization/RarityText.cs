@@ -91,10 +91,17 @@ namespace DeckCustomization
             }    
 
             // do not add percentage if the card is not in activeCards
-            if (DeckCustomization.DisplayPerc && DeckCustomization.activeCards.Select(c => c.cardName).Contains(card.cardName))
+            if (DeckCustomization.DisplayPerc && DeckCustomization.activeCards.Contains(card.sourceCard))
             {
-                float p = RarityUtils.GetRarityAsPerc(card);
-                text += "("+String.Format("{0:0.##}", p*100f)+"%)";
+                try
+                {
+                    float p = RarityUtils.GetRarityAsPerc(card.sourceCard);
+                    text += "(" + String.Format("{0:0.##}", p * 100f) + "%)";
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.LogException(e);
+                }
             }
             rarityText.text = text;
             rarityText.color = color;
@@ -106,5 +113,4 @@ namespace DeckCustomization
             rarityText.fontSize = 65;
         }
     }
-
 }

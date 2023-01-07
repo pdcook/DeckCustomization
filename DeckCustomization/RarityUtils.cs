@@ -130,7 +130,14 @@ namespace DeckCustomization
         }
         internal static float GetRelativeRarity(CardInfo card)
         {
-            return GetRelativeRarity(card.rarity) * GetRelativeRarity(card.colorTheme) * GetRelativeRarity(CardManager.cards.Values.First(c => c.cardInfo == card).category) * RarityLib.Utils.RarityUtils.GetCardRarityModifier(card);
+            float modRarity = 1f;
+
+            if (CardManager.cards.Values.Select(c => c.cardInfo).Contains(card))
+            {
+                modRarity = GetRelativeRarity(CardManager.cards.Values.First(c => c.cardInfo == card).category);
+            }
+
+            return GetRelativeRarity(card.rarity) * GetRelativeRarity(card.colorTheme) * modRarity * RarityLib.Utils.RarityUtils.GetCardRarityModifier(card);
         }
         internal static string GetThemeAsString(CardThemeColor.CardThemeColorType theme)
         {

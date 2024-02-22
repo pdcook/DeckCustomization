@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <RoundsFolder>E:\Program Files (x86)\Steam\steamapps\common\ROUNDS</RoundsFolder>
+    <RoundsFolder>C:\Program Files (x86)\Steam\steamapps\common\ROUNDS</RoundsFolder>
   </PropertyGroup>
 
 	
@@ -25,9 +25,6 @@
     <Reference Include="CardChoiceSpawnUniqueCardPatch">
       <HintPath>$(RoundsFolder)\BepInEx\plugins\CardChoiceSpawnUniqueCardPatch.dll</HintPath>
     </Reference>
-    <Reference Include="MMHOOK_Assembly-CSharp">
-      <HintPath>$(RoundsFolder)\BepInEx\plugins\MMHOOK_Assembly-CSharp.dll</HintPath>
-    </Reference>
     <Reference Include="ModdingUtils">
       <HintPath>$(RoundsFolder)\BepInEx\plugins\ModdingUtils.dll</HintPath>
     </Reference>
@@ -43,14 +40,8 @@
     <Reference Include="PhotonUnityNetworking">
       <HintPath>$(RoundsFolder)\Rounds_Data\Managed\PhotonUnityNetworking.dll</HintPath>
     </Reference>
-    <Reference Include="PhotonUnityNetworking.Demos">
-      <HintPath>$(RoundsFolder)\Rounds_Data\Managed\PhotonUnityNetworking.Demos.dll</HintPath>
-    </Reference>
     <Reference Include="PhotonUnityNetworking.Utilities">
       <HintPath>$(RoundsFolder)\Rounds_Data\Managed\PhotonUnityNetworking.Utilities.dll</HintPath>
-    </Reference>
-    <Reference Include="PhotonWebSocket">
-      <HintPath>$(RoundsFolder)\Rounds_Data\Managed\PhotonWebSocket.dll</HintPath>
     </Reference>
     <Reference Include="RarityLib">
       <HintPath>$(RoundsFolder)\BepInEx\plugins\RarityLib.dll</HintPath>
@@ -59,7 +50,7 @@
       <HintPath>$(RoundsFolder)\BepInEx\plugins\CardThemeLib.dll</HintPath>
     </Reference>
     <Reference Include="UnboundLib">
-      <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundLib\UnboundLib.dll</HintPath>
+      <HintPath>$(RoundsFolder)\BepInEx\plugins\UnboundLib.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
       <HintPath>$(RoundsFolder)\Rounds_Data\Managed\Unity.TextMeshPro.dll</HintPath>

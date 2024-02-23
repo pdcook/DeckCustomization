@@ -47,8 +47,6 @@ namespace DeckCustomization
             }
         }
 
-
-
         public static CardInfo.Rarity GetCardRarityOrDefault(CardInfo card, int index)
         {
             if (index == 0) return cardsDefaultRarity[card];

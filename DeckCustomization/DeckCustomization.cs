@@ -20,6 +20,7 @@ using UnboundLib.Utils;
 using UnboundLib.Cards;
 using UnityEngine.Events;
 using RarityLib.Utils;
+using static UnityEngine.ParticleSystem;
 
 namespace DeckCustomization
 {
@@ -164,7 +165,7 @@ namespace DeckCustomization
                 foreach (CardInfo card in allCards)
                 {
                     mod = CardManager.cards.Values.First(c => c.cardInfo == card).category;
-                    cardRaritysIndex[card.name] = Config.Bind(CompatibilityModName, card.name, "DEFAULT", $"Rarity value of card {card.CardName} from {mod}");
+                    cardRaritysIndex[card.name] = Config.Bind(CompatibilityModName, card.name, "Default", $"Rarity value of card {card.CardName} from {mod}");
                     RarityToggle.cardRarityIndex[card.name] = cardRaritysIndex[card.name].Value;
                 }
             });
@@ -188,12 +189,12 @@ namespace DeckCustomization
                 // sync twice just to be safe
                 for (int i = 0; i<2; i++)
                 {
-                    NetworkingManager.RPC_Others(typeof(DeckCustomization), nameof(SyncSettings), new object[] { BetterMethod, ModRarities.Keys.ToArray(), ModRarities.Values.ToArray(), RarityRarities.Keys.Select(k => k.ToString()).ToArray(), RarityRarities.Values.ToArray(), ThemeRarities.Keys.Select(k=>k.ToString()).ToArray(), ThemeRarities.Values.ToArray() });
+                    NetworkingManager.RPC_Others(typeof(DeckCustomization), nameof(SyncSettings), new object[] { BetterMethod, ModRarities.Keys.ToArray(), ModRarities.Values.ToArray(), RarityRarities.Keys.Select(k => k.ToString()).ToArray(), RarityRarities.Values.ToArray(), ThemeRarities.Keys.Select(k=>k.ToString()).ToArray(), ThemeRarities.Values.ToArray(), RarityToggle.cardRarityIndex.Keys.ToArray(), RarityToggle.cardRarityIndex.Values.ToArray() });
                 }
             }
         }
         [UnboundRPC]
-        private static void SyncSettings(bool better, string[] mods, float[] modrarities, string[] rarities, float[] rarityrarities, string[] themes, float[] themerarities)
+        private static void SyncSettings(bool better, string[] mods, float[] modrarities, string[] rarities, float[] rarityrarities, string[] themes, float[] themerarities, string[] cardName, string[] cardRarities)
         {
             //BetterMethod = better;
 
@@ -210,6 +211,11 @@ namespace DeckCustomization
                 ThemeRarities[CardThemeLib.CardThemeLib.instance.CreateOrGetType(themes[i])] = themerarities[i];
             }
 
+            for (int i = 0; i < cardName.Length; i++)
+            {
+                RarityToggle.cardRarityIndex[cardName[i]] = cardRarities[i];
+                RarityToggle.ChangeCardRarity(ModdingUtils.Utils.Cards.instance.GetCardWithObjectName(cardName[i]), cardRarities[i]);
+            }
         }
         
         private static GameObject CreateSliderWithoutInput(string text, GameObject parent, int fontSize, float minValue, float maxValue, float defaultValue,

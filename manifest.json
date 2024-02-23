@@ -1,6 +1,6 @@
 {
     "name": "Deck_Customization",
-    "version_number": "0.2.3",
+    "version_number": "0.2.8",
     "website_url": "https://github.com/pdcook/DeckCustomization",
     "description": "Fully adjustable card rarities as well as accessibility options and stats for nerds",
     "dependencies": [
@@ -9,6 +9,7 @@
         "Root-RarityLib-1.1.1",
         "willis81808-UnboundLib-3.1.2",
         "willis81808-MMHook-1.0.0",
-	"BepInEx-BepInExPack_ROUNDS-5.4.1100"
+		"BepInEx-BepInExPack_ROUNDS-5.4.1100",
+		"Root-CardThemeLib-1.1.1"
     ]
 }

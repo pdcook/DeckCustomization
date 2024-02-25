@@ -168,7 +168,7 @@ namespace DeckCustomization
                 foreach (CardInfo card in allCards)
                 {
                     mod = CardManager.cards.Values.First(c => c.cardInfo == card).category;
-                    cardRaritysIndex[card.name] = Config.Bind(CompatibilityModName, card.name, "Default", $"Rarity value of card {card.CardName} from {mod}");
+                    cardRaritysIndex[card.name] = Config.Bind(CompatibilityModName, $"{mod}_{card.name}", "Default", $"Rarity value of card {card.CardName} from {mod}");
                     RarityToggle.cardRarityIndex[card.name] = cardRaritysIndex[card.name].Value;
                 }
             });

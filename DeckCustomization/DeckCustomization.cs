@@ -473,7 +473,7 @@ namespace DeckCustomization
                     catch { }
                 }, out slider).GetComponentsInChildren<TextMeshProUGUI>()[2];
                 cardRaritySlider[card.name] = slider;
-                CardRaritysTexts[card.name].text = RarityToggle.cardRarityIndex[card.name];
+                CardRaritysTexts[card.name].text = RarityToggle.cardRarityIndex[card.name].ToUpper();
                 CardRaritysTexts[card.name].color = RarityLib.Utils.RarityUtils.GetRarityData(card.rarity).value == 0 ? RarityUtils.commonColor : RarityLib.Utils.RarityUtils.GetRarityData(card.rarity).color;
             }
         }

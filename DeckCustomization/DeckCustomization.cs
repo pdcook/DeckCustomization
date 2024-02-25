@@ -63,8 +63,11 @@ namespace DeckCustomization
         private static Dictionary<CardThemeColor.CardThemeColorType, ConfigEntry<float>> ThemeRaritiesConfig = new Dictionary<CardThemeColor.CardThemeColorType, ConfigEntry<float>>() { };
         internal static Dictionary<CardThemeColor.CardThemeColorType, float> ThemeRarities = new Dictionary<CardThemeColor.CardThemeColorType, float>() { };
 
+        // Rarity Toggle
         public static Dictionary<string, TextMeshProUGUI> CardRaritysTexts = new Dictionary<string, TextMeshProUGUI>();
         public static Dictionary<string, ConfigEntry<string>> cardRaritysIndex = new Dictionary<string, ConfigEntry<string>>() { };
+
+        public static Dictionary<string, Slider> cardRaritySlider = new Dictionary<string, Slider>();
 
         private static float MaxCardRarity = 0;
 
@@ -334,8 +337,8 @@ namespace DeckCustomization
             ThemeRarityGUI(themeMenu);
             GameObject modMenu = MenuHandler.CreateMenu("Card Pack Rarities", () => { }, menu, 60, true, true, menu.transform.parent.gameObject);
             Unbound.Instance.StartCoroutine(SetupModRarityGUI(modMenu));
-            GameObject cardsRaritiesMenu = MenuHandler.CreateMenu("Card Rarities", () => { }, menu, 60, true, true, menu.transform.parent.gameObject);
-            Unbound.Instance.StartCoroutine(SetupCardsModRaritiesGUI(cardsRaritiesMenu));
+            GameObject cardsRarityMenu = MenuHandler.CreateMenu("Cards Rarity", () => { }, menu, 60, true, true, menu.transform.parent.gameObject);
+            Unbound.Instance.StartCoroutine(SetupCardsModRarityGUI(cardsRarityMenu));
 
             MenuHandler.CreateText(" ", menu, out TextMeshProUGUI _, 30);
             void ResetALL()
@@ -377,6 +380,20 @@ namespace DeckCustomization
                 {
                     themesliders[theme].value = 100 * RarityUtils.defaultGeneralRarity;
                 }
+
+                foreach (CardInfo card in allCards)
+                {
+                    try
+                    {
+                        RarityToggle.ChangeCardRarity(card, (int)RarityToggle.cardsDefaultRarity[card] + 1);
+                        CardRaritysTexts[card.name].name = "DEFAULT";
+                        CardRaritysTexts[card.name].color = RarityToggle.cardsDefaultRarity[card] == 0 ? Color.white : RarityLib.Utils.RarityUtils.GetRarityData(RarityToggle.cardsDefaultRarity[card]).color;
+                        cardRaritysIndex[card.name].Value = "Default";
+                        cardRaritySlider[card.name].value = 0;
+                    }
+                    catch { }
+                }
+
                 UpdatePercs();
             }
 
@@ -387,38 +404,75 @@ namespace DeckCustomization
             UpdatePercs();
         }
 
-        private IEnumerator SetupCardsModRaritiesGUI(GameObject menu)
+        private IEnumerator SetupCardsModRarityGUI(GameObject menu)
         {
             yield return new WaitForSecondsRealtime(1f);
-            CardsModRaritiesGUI(menu);
+            CardsModRarityGUI(menu);
             yield break;
         }
 
-        private void CardsModRaritiesGUI(GameObject menu)
+        private void CardsModRarityGUI(GameObject menu)
         {
+            void ResetAllCardsRarity()
+            {
+                foreach (CardInfo card in allCards)
+                {
+                    try
+                    {
+                        RarityToggle.ChangeCardRarity(card, (int)RarityToggle.cardsDefaultRarity[card] + 1);
+                        CardRaritysTexts[card.name].name = "DEFAULT";
+                        CardRaritysTexts[card.name].color = RarityToggle.cardsDefaultRarity[card] == 0 ? Color.white : RarityLib.Utils.RarityUtils.GetRarityData(RarityToggle.cardsDefaultRarity[card]).color;
+                        cardRaritysIndex[card.name].Value = "Default";
+                        cardRaritySlider[card.name].value = 0;
+                    } catch { }
+                }
+            }
+
             foreach (string mod in RarityToggle.cardsWithMod.Keys)
             {
                 GameObject modCardsRaritiesMenu = MenuHandler.CreateMenu(mod.ToUpper(), () => { }, menu, 60, true, true, menu.transform.parent.gameObject);
-                ModCardsRaritiesGUI(modCardsRaritiesMenu, mod);
+                ModCardsRarityGUI(modCardsRaritiesMenu, mod);
             }
+
+            MenuHandler.CreateText("", menu, out _);
+            MenuHandler.CreateButton("Reset <color=#FF0000><b>All</b></color> Cards Rarity", menu, ResetAllCardsRarity, 30);
         }
 
-        private void ModCardsRaritiesGUI(GameObject menu, string modCardsRaritiesMenu)
+        private void ModCardsRarityGUI(GameObject menu, string modCardsRaritiesMenu)
         {
+
+            void ResetCardsRarity()
+            {
+                foreach (CardInfo card in RarityToggle.cardsWithMod[modCardsRaritiesMenu])
+                {
+                    try
+                    {
+                        RarityToggle.ChangeCardRarity(card, (int)RarityToggle.cardsDefaultRarity[card] + 1);
+                        CardRaritysTexts[card.name].name = "DEFAULT";
+                        CardRaritysTexts[card.name].color = RarityToggle.cardsDefaultRarity[card] == 0 ? Color.white : RarityLib.Utils.RarityUtils.GetRarityData(RarityToggle.cardsDefaultRarity[card]).color;
+                        cardRaritysIndex[card.name].Value = "Default";
+                        cardRaritySlider[card.name].value = 0;
+                    } catch { }
+                }
+            }
+            MenuHandler.CreateButton("Reset Cards Rarity", menu, ResetCardsRarity, 30);
+            MenuHandler.CreateText("", menu, out _);
             foreach (CardInfo card in RarityToggle.cardsWithMod[modCardsRaritiesMenu])
             {
-                MenuHandler.CreateText(card.CardName, menu, out _, 30);
+                Slider slider;
+                MenuHandler.CreateText(card.CardName, menu, out TextMeshProUGUI _, 30);
                 CardRaritysTexts[card.name] = CreateSliderWithoutInput(RarityToggle.cardsRarity[card].ToString(), menu, 30, 0, RarityLib.Utils.RarityUtils.Rarities.Count, RarityToggle.RarityIndex.IndexOf(RarityToggle.cardRarityIndex[card.name]), (value) =>
                 {
                     try
                     {
                         RarityToggle.ChangeCardRarity(card, (int)value);
-                        CardRaritysTexts[card.name].text = (int)value == 0 ? "Default" : RarityLib.Utils.RarityUtils.GetRarityData(RarityToggle.GetCardRarityOrDefault(card, (int)value)).name;
+                        CardRaritysTexts[card.name].text = (int)value == 0 ? "DEFAULT" : RarityLib.Utils.RarityUtils.GetRarityData(RarityToggle.GetCardRarityOrDefault(card, (int)value)).name.ToUpper();
                         CardRaritysTexts[card.name].color = RarityToggle.GetCardRarityOrDefault(card, (int)value) == 0 ? Color.white : RarityLib.Utils.RarityUtils.GetRarityData(RarityToggle.GetCardRarityOrDefault(card, (int)value)).color;
                         cardRaritysIndex[card.name].Value = (int)value == 0 ? "Default" : RarityLib.Utils.RarityUtils.GetRarityData(RarityToggle.GetCardRarityOrDefault(card, (int)value)).name;
                     }
                     catch { }
-                }, out _).GetComponentsInChildren<TextMeshProUGUI>()[2];
+                }, out slider).GetComponentsInChildren<TextMeshProUGUI>()[2];
+                cardRaritySlider[card.name] = slider;
                 CardRaritysTexts[card.name].text = RarityToggle.cardRarityIndex[card.name];
                 CardRaritysTexts[card.name].color = RarityLib.Utils.RarityUtils.GetRarityData(card.rarity).value == 0 ? RarityUtils.commonColor : RarityLib.Utils.RarityUtils.GetRarityData(card.rarity).color;
             }
